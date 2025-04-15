@@ -4,14 +4,17 @@ spring:
   h2:
     console:
       path: /h2-console
-      settings.trace: false
-      settings.web-allow-others: false
       enabled: true
-
   datasource:
-    url: jdbc:h2:file:${DB_FILE}
+    url: jdbc:h2:file:./${DB_FILE}
     username: ${DB_USER}
     password: ${DB_PASS}
+    driver-class-name: org.h2.Driver
   jpa:
-      database-platform: org.hibernate.dialect.H2Dialect
-
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+axon:
+    axonserver:
+        enabled: false
