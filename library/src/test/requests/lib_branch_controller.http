@@ -33,5 +33,5 @@ Content-Type: application/json
 
 ### GET CATALOG OF BRANCH
 
-GET {{host}}:{{port}}/city/{{city}}/branch/{{branch_name}}/catalog
+GET {{host}}:{{port}}/{{base_url}}/city/{{city}}/branch/{{branch_name}}/catalog
 

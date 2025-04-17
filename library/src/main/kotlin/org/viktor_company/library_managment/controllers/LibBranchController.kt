@@ -11,13 +11,14 @@ import org.springframework.stereotype.Controller
 import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriBuilder
+import org.viktor_company.library_managment.BookConverter
 import org.viktor_company.library_managment.BookDTO
 import org.viktor_company.library_managment.LibBranchConverter
 import org.viktor_company.library_managment.LibBranchDTO
-import org.viktor_company.library_managment.domain.books.Book
 import org.viktor_company.library_managment.domain.lib_branches.CreateBookInCatalog
 import org.viktor_company.library_managment.domain.lib_branches.CreateLibBranch
 import org.viktor_company.library_managment.domain.lib_branches.LibBranchID
+import org.viktor_company.library_managment.repositories.BookRepo
 import org.viktor_company.library_managment.repositories.LibBranchRepo
 
 //TODO: vidi za queries
@@ -28,7 +29,8 @@ import org.viktor_company.library_managment.repositories.LibBranchRepo
 class LibBranchController(
     private val commandGateway: CommandGateway,
     private val uriBuilder: UriBuilder,
-    private val libBranchesRepo: LibBranchRepo
+    private val libBranchesRepo: LibBranchRepo,
+    private val bookRepo: BookRepo
 ) {
     private fun headers(
         vararg pairs: Pair<String, String>
@@ -97,13 +99,14 @@ class LibBranchController(
     @GetMapping("branch")
     fun getBranches(
         @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") pageSize: Int,
         @RequestParam(required = false, name = "city") cityName: String?,
         @RequestParam(required = false, name = "branch") branchName: String?,
         libBranchConverter: LibBranchConverter,
     ): ResponseEntity<Page<LibBranchDTO>> {
         return ResponseEntity.ok(
             libBranchesRepo.findAll(
-                PageRequest.of(0, 100)
+                PageRequest.of(page, pageSize)
             ).map { lib -> libBranchConverter.toDTO(lib) }
         )
     }
@@ -113,8 +116,19 @@ class LibBranchController(
         @PathVariable("cityName") cityName: String,
         @PathVariable("branchName") branchName: String,
         @RequestParam(required = false) title: String?,
-        @RequestParam(required = false) author: String?
-    ): ResponseEntity<List<Book>> {
-        throw NotImplementedError()
+        @RequestParam(required = false) author: String?,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") pageSize: Int,
+        converter: BookConverter,
+    ): ResponseEntity<Page<BookDTO>> {
+       return ResponseEntity.ok(
+           bookRepo.findAllMatchingForLibBranch(
+               page=PageRequest.of(page,pageSize),
+               author=author,
+               title=title,
+               city=cityName,
+               branchName=branchName
+           ).map{book->converter.toDTO(book)}
+       )
     }
 }

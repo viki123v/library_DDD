@@ -26,8 +26,8 @@ class Config {
 
 @Configuration
 class AggregatesRepoConfig {
-    @Bean
-    fun libBranchAxonRepo(
+    @Bean(name = ["axonLibBranchRepo"])
+    fun libBranch(
         provider: EntityManagerProvider,
         eventBus: EventBus,
     ): GenericJpaRepository<LibBranch> {
@@ -41,6 +41,6 @@ class AggregatesRepoConfig {
             }
             .entityManagerProvider(provider)
             .eventBus(eventBus)
-            .build();
+            .build()
     }
 }
