@@ -1,7 +1,17 @@
 package org.viktor_company.library_managment.domain.books
 
-import org.axonframework.modelling.command.AggregateIdentifier
+import org.axonframework.eventsourcing.EventSourcingHandler
+import org.springframework.stereotype.Component
+import org.viktor_company.library_managment.domain.lib_branches.CreatedBookInCatalog
 
-class Book(@AggregateIdentifier val id: BookID, val description: String){
+@Component
+class Book(){
+    private lateinit var id:BookID
+    private lateinit var desc:String
 
+    @EventSourcingHandler
+    fun on(cmd: CreatedBookInCatalog){
+        id=cmd.id
+        desc = cmd.description
+    }
 }

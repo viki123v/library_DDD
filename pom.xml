@@ -81,6 +81,11 @@
         </dependency>
         <dependency>
             <groupId>org.axonframework</groupId>
+            <artifactId>axon-metrics</artifactId>
+            <version>4.11.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.axonframework</groupId>
             <artifactId>axon-spring-boot-starter</artifactId>
             <version>4.11.1</version>
         </dependency>

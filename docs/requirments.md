@@ -1,7 +1,7 @@
 ## Librairy 
 
 A public library allows patrons to place books on hold at its various library branches. Available books can be placed on hold only by one patron at any given point in time.
-Books are either circulating or restricted, and can have retrieval or usage fees.5. 
+Books are either circulating or restricted, and can have retrieval or usage fees. 
 A regular patron is limited to five holds at any given moment, while a researcher patron is allowed an unlimited number of holds.
 An open-ended book hold is active until the patron checks out the book, at which time it is completed. A closed-ended book hold that is not completed within a fixed number of days after it was requested will expire.
 This check is done at the beginning of a day by taking a look at daily sheet with expiring holds. Only a researcher patron can request an open-ended hold duration. 

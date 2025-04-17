@@ -1,0 +1,37 @@
+@base_url=/api/v1
+@host=localhost
+@port=8080
+@city=resen
+@branch_name=lib
+@title=biography
+@author=viktor
+
+### CREATE BRANCH
+
+POST {{host}}:{{port}}/{{base_url}}/branch
+Content-Type: application/json
+
+{
+  "city": "{{city}}",
+  "name": "{{branch_name}}"
+}
+
+### GET BRANCH
+
+GET {{host}}:{{port}}/{{base_url}}/branch
+
+### CREATE CATALOG IN BRANCH
+
+POST {{host}}:{{port}}/{{base_url}}/city/{{city}}/branch/{{branch_name}}
+Content-Type: application/json
+
+{
+  "title": "{{title}}",
+  "author": "{{author}}",
+  "description" : "It's my life"
+}
+
+### GET CATALOG OF BRANCH
+
+GET {{host}}:{{port}}/city/{{city}}/branch/{{branch_name}}/catalog
+

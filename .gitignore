@@ -6,6 +6,7 @@ target/
 .env
 h2/
 data/
+requirments_refined.md 
 
 ### STS ###
 .apt_generated
