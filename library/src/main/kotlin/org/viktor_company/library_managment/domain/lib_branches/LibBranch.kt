@@ -1,45 +1,43 @@
 package org.viktor_company.library_managment.domain.lib_branches
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import jakarta.persistence.EmbeddedId
+import jakarta.persistence.Entity
+import jakarta.persistence.OneToMany
 import org.axonframework.commandhandling.CommandHandler
-import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateIdentifier
-import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.spring.stereotype.Aggregate
+import org.viktor_company.library_managment.domain.books.Book
 import org.viktor_company.library_managment.domain.books.BookID
 
 @Aggregate
-class LibBranch()
-{
+@Entity
+class LibBranch() {
     @AggregateIdentifier
+    @EmbeddedId
     lateinit var id: LibBranchID
-    val books= mutableListOf<BookID>()
+
+    @OneToMany(mappedBy = "id.libBranchID")
+    @JsonIgnore
+    val books = mutableListOf<Book>()
 
     @CommandHandler
-    constructor(cmd:CreateLibBranch) : this(){
-        AggregateLifecycle.apply(CreatedLibBranch(cmd.libBranchID))
-    }
-
-    @EventSourcingHandler
-    fun on(e: CreatedLibBranch):Unit{
-        id=e.id
+    constructor(cmd: CreateLibBranch) : this() {
+        id = cmd.libBranchID
     }
 
     @CommandHandler
     fun handle(cmd: CreateBookInCatalog) {
-        val id=BookID(
-            cmd.title,
-            cmd.author,
-            cmd.libBranchID,
-        )
-        AggregateLifecycle.apply {
-            CreatedBookInCatalog(
-                id,
-                cmd.description
+        books.addLast(
+            Book(
+                BookID(
+                    cmd.title,
+                    cmd.author,
+                    cmd.libBranchID
+                ),
+                cmd.description,
             )
-        }.andThen {
-            books.add(id)
-        }
+        )
     }
-
 
 }
