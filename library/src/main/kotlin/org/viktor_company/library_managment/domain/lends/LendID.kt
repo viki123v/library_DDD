@@ -1,7 +1,16 @@
 package org.viktor_company.library_managment.domain.lends
 
+import jakarta.persistence.Embeddable
 import org.viktor_company.library_managment.domain.books_copies.BookCopyID
 import org.viktor_company.library_managment.domain.patrons.PatronID
 
-data class LendID(val patronID:PatronID, val bookCopyID:BookCopyID) {
+@Embeddable
+class LendID() {
+    lateinit var patronID:PatronID
+    lateinit var bookCopyID:BookCopyID
+
+    constructor(patronID:PatronID,bookCopyID: BookCopyID) : this() {
+        this.patronID = patronID
+        this.bookCopyID = bookCopyID
+    }
 }

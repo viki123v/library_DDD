@@ -21,8 +21,6 @@ import org.viktor_company.library_managment.domain.lib_branches.LibBranchID
 import org.viktor_company.library_managment.repositories.BookRepo
 import org.viktor_company.library_managment.repositories.LibBranchRepo
 
-//TODO: vidi za queries
-//TODO: vidi dali imash klaeno foreign keys
 
 @Controller
 @RequestMapping("/api/v1")
@@ -32,13 +30,6 @@ class LibBranchController(
     private val libBranchesRepo: LibBranchRepo,
     private val bookRepo: BookRepo
 ) {
-    private fun headers(
-        vararg pairs: Pair<String, String>
-    ): HttpHeaders {
-        return HttpHeaders(
-            MultiValueMap.fromSingleValue(pairs.toMap())
-        )
-    }
 
     @PostMapping(
         path = ["branch"],
@@ -56,12 +47,16 @@ class LibBranchController(
             )
         )
         return ResponseEntity<Unit>(
-            headers(
-                "location" to uriBuilder.path("/branch")
-                    .queryParam("city", libBranch.city)
-                    .queryParam("name", libBranch.name)
-                    .build()
-                    .toString(),
+            HttpHeaders(
+                MultiValueMap.fromSingleValue(
+                    mapOf(
+                        "location" to uriBuilder.path("/branch")
+                            .queryParam("city", libBranch.city)
+                            .queryParam("name", libBranch.name)
+                            .build()
+                            .toString(),
+                    )
+                )
             ),
             HttpStatus.CREATED
         )
@@ -85,12 +80,16 @@ class LibBranchController(
             )
         )
         return ResponseEntity<Unit>(
-            headers(
-                "Location" to uriBuilder.path("/city/{city}/branch/{branch}")
-                    .queryParam("title", book.title)
-                    .queryParam("author", book.author)
-                    .build(cityName, branchName)
-                    .toString(),
+            HttpHeaders(
+                MultiValueMap.fromSingleValue(
+                    mapOf(
+                        "Location" to uriBuilder.path("/city/{city}/branch/{branch}/book")
+                            .queryParam("title", book.title)
+                            .queryParam("author", book.author)
+                            .build(cityName, branchName)
+                            .toString(),
+                    )
+                )
             ),
             HttpStatus.CREATED
         )
@@ -111,7 +110,7 @@ class LibBranchController(
         )
     }
 
-    @GetMapping("city/{cityName}/branch/{branchName}/catalog")
+    @GetMapping("city/{cityName}/branch/{branchName}/book")
     fun getCatalog(
         @PathVariable("cityName") cityName: String,
         @PathVariable("branchName") branchName: String,
@@ -121,14 +120,14 @@ class LibBranchController(
         @RequestParam(defaultValue = "20") pageSize: Int,
         converter: BookConverter,
     ): ResponseEntity<Page<BookDTO>> {
-       return ResponseEntity.ok(
-           bookRepo.findAllMatchingForLibBranch(
-               page=PageRequest.of(page,pageSize),
-               author=author,
-               title=title,
-               city=cityName,
-               branchName=branchName
-           ).map{book->converter.toDTO(book)}
-       )
+        return ResponseEntity.ok(
+            bookRepo.findAllMatchingForLibBranch(
+                page = PageRequest.of(page, pageSize),
+                author = author,
+                title = title,
+                city = cityName,
+                branchName = branchName
+            ).map { book -> converter.toDTO(book) }
+        )
     }
 }

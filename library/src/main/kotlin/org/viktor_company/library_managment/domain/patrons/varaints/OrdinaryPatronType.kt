@@ -1,4 +1,4 @@
 package org.viktor_company.library_managment.domain.patrons.varaints
 
-class OrdinaryPatronType {
+class OrdinaryPatronType : PatronType {
 }

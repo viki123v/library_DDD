@@ -1,5 +1,13 @@
 package org.viktor_company.library_managment.domain.patrons
 
-data class PatronID(
-    val username:String
-)
+import jakarta.persistence.Embeddable
+
+@Embeddable
+class PatronID()
+{
+    lateinit var username:String
+
+    constructor(username:String):this(){
+        this.username = username
+    }
+}

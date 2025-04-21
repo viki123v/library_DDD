@@ -2,6 +2,8 @@ package org.viktor_company.library_managment
 
 import org.springframework.stereotype.Service
 import org.viktor_company.library_managment.domain.books.Book
+import org.viktor_company.library_managment.domain.books_copies.BookCopy
+import org.viktor_company.library_managment.domain.books_copies.value_objects.Fee
 import org.viktor_company.library_managment.domain.lib_branches.LibBranch
 
 data class LibBranchDTO(
@@ -14,6 +16,32 @@ data class BookDTO(
     val author:String,
     val description:String
 )
+
+data class BookCopyMinimalDataDTO(
+    val fee: Fee,
+    val isbn:Long,
+)
+
+data class BookCopyDTO(
+    val author:String,
+    val title:String,
+    val copies:List<BookCopyMinimalDataDTO>
+)
+
+@Service
+class BookCopyConverter{
+    fun toDTO(copies:List<BookCopy>) : List<BookCopyDTO>{
+       return copies.groupBy { "${it.id.bookID.autor}-${it.id.bookID.title}" }
+           .entries
+           .map{
+               val (author,title) = it.key.split("-")
+               val copies = it.value.map{
+                   BookCopyMinimalDataDTO(it.fee,it.id.isbn!!)
+               }
+               BookCopyDTO(author,title,copies)
+           }
+    }
+}
 
 @Service
 class LibBranchConverter{
